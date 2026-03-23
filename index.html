@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WI Aviation — Email Signature Generator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f4fa;
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+  .header {
+    background: #1E2761;
+    padding: 24px 40px;
+  }
+  .header h1 { color: #fff; font-size: 22px; font-weight: 600; }
+  .header span { color: #CADCFC; font-size: 14px; }
+  .container {
+    max-width: 1100px;
+    margin: 32px auto;
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 32px;
+    padding: 0 24px;
+  }
+  @media (max-width: 860px) {
+    .container { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  .panel h2 {
+    font-size: 16px;
+    color: #1E2761;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #EAF0F8;
+  }
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block; font-size: 11px; font-weight: 700;
+    color: #5A6A7E; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
+  }
+  .field input, .field select {
+    width: 100%; padding: 10px 12px; border: 1.5px solid #D0D5DD;
+    border-radius: 8px; font-size: 14px; font-family: inherit; color: #1a1a2e;
+    transition: border-color 0.2s;
+  }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: #2D9CDB; box-shadow: 0 0 0 3px rgba(45,156,219,0.12);
+  }
+  .field input::placeholder { color: #B0B8C4; }
+  .field .hint { font-size: 11px; color: #999; margin-top: 3px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .subtitle { font-size: 12px; color: #999; margin: -14px 0 20px; }
+  #signature-preview {
+    border: 1px solid #eee; border-radius: 8px; padding: 24px; background: #fff; min-height: 160px;
+  }
+  .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .btn {
+    padding: 10px 20px; border: none; border-radius: 8px;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary { background: #1E2761; color: #fff; }
+  .btn-primary:hover { background: #2a3a7a; }
+  .btn-secondary { background: #EAF0F8; color: #1E2761; }
+  .btn-secondary:hover { background: #d5e4f5; }
+  .toast {
+    position: fixed; bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1E2761; color: #fff; padding: 12px 28px;
+    border-radius: 10px; font-size: 14px; font-weight: 500;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2); opacity: 0;
+    transition: all 0.3s ease; z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .instructions {
+    max-width: 1100px; margin: 0 auto 40px; padding: 0 24px;
+  }
+  .instructions .panel h2 { margin-bottom: 16px; }
+  .instructions h3 { font-size: 14px; color: #2D9CDB; margin: 16px 0 8px; }
+  .instructions ol { padding-left: 20px; color: #444; font-size: 14px; line-height: 1.8; }
+  .note {
+    background: #FFF8E8; border-left: 3px solid #F2994A;
+    padding: 10px 14px; font-size: 13px; color: #7A6229;
+    border-radius: 0 6px 6px 0; margin-top: 12px;
+  }
+  details.admin { margin-top: 20px; padding-top: 16px; border-top: 2px solid #EAF0F8; }
+  details.admin summary {
+    font-size: 11px; font-weight: 700; color: #5A6A7E;
+    text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; padding: 4px 0;
+  }
+  details.admin .field { margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Wisconsin Aviation &mdash; Email Signature Generator</h1>
+  <span>Create a professional, uniform email signature for Outlook</span>
+</div>
+
+<div class="container">
+  <!-- LEFT: Form -->
+  <div class="panel">
+    <h2>Your Information</h2>
+
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="fullName" placeholder="e.g. Dylan Will" oninput="render()">
+    </div>
+
+    <div class="field">
+      <label>Title</label>
+      <input type="text" id="title" placeholder="e.g. Air Charter Specialist" oninput="render()">
+    </div>
+
+    <div class="field">
+      <label>Department (optional)</label>
+      <input type="text" id="department" placeholder="e.g. Aircraft Sales" oninput="render()">
+    </div>
+
+    <div class="field">
+      <label>Location(s)</label>
+      <select id="location" onchange="render()">
+        <option value="Madison">Madison</option>
+        <option value="Watertown">Watertown</option>
+        <option value="Juneau">Juneau</option>
+        <option value="Madison-Watertown">Madison &amp; Watertown</option>
+        <option value="Madison-Juneau">Madison &amp; Juneau</option>
+        <option value="Watertown-Juneau">Watertown &amp; Juneau</option>
+        <option value="Madison-Watertown-Juneau">Madison, Watertown &amp; Juneau</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label>Office Phone</label>
+        <input type="text" id="officePhone" placeholder="608-268-5000" oninput="render()">
+      </div>
+      <div class="field">
+        <label>Cell Phone (optional)</label>
+        <input type="text" id="cellPhone" placeholder="" oninput="render()">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label>Direct Line (optional)</label>
+        <input type="text" id="directPhone" placeholder="" oninput="render()">
+      </div>
+      <div class="field">
+        <label>Fax (optional)</label>
+        <input type="text" id="fax" placeholder="" oninput="render()">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="name@wisav.com" oninput="render()">
+    </div>
+
+    <!-- Admin section: image URLs -->
+    <details class="admin">
+      <summary>Image Settings (Admin Only)</summary>
+      <div class="field">
+        <label>WI Aviation Logo URL</label>
+        <input type="text" id="logoUrl" value="https://www.wisconsinaviation.com/files/images/small-logo.png" oninput="render()">
+        <div class="hint">The blue "W" icon from wisconsinaviation.com</div>
+      </div>
+      <div class="field">
+        <label>"Celebrating 44 Years" Badge URL</label>
+        <input type="text" id="badgeUrl" value="" placeholder="Paste badge image URL here" oninput="render()">
+        <div class="hint">Leave blank to hide. Add the URL once marketing provides the image.</div>
+      </div>
+    </details>
+  </div>
+
+  <!-- RIGHT: Preview -->
+  <div class="panel" style="height:fit-content;">
+    <h2>Live Preview</h2>
+    <p class="subtitle">This is exactly how your signature will look in emails</p>
+    <div id="signature-preview"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="copySignature()">Copy Signature</button>
+      <button class="btn btn-secondary" onclick="copyHtml()">Copy HTML Code</button>
+    </div>
+  </div>
+</div>
+
+<!-- Instructions -->
+<div class="instructions">
+  <div class="panel">
+    <h2>How to Add Your Signature in Outlook</h2>
+
+    <h3>Outlook Desktop (Windows)</h3>
+    <ol>
+      <li>Fill in your information above and click <strong>"Copy Signature"</strong></li>
+      <li>In Outlook, go to <strong>File &rarr; Options &rarr; Mail &rarr; Signatures</strong></li>
+      <li>Click <strong>"New"</strong> and name it (e.g., "WI Aviation")</li>
+      <li>Click inside the signature editor box and press <strong>Ctrl+V</strong> to paste</li>
+      <li>Set it as your default for new messages and replies, then click <strong>OK</strong></li>
+    </ol>
+
+    <h3>Outlook on the Web (outlook.office.com)</h3>
+    <ol>
+      <li>Fill in your information above and click <strong>"Copy Signature"</strong></li>
+      <li>Click the <strong>gear icon</strong> (top right) &rarr; <strong>View all Outlook settings</strong></li>
+      <li>Go to <strong>Mail &rarr; Compose and reply</strong></li>
+      <li>Under "Email signature," click in the editor and press <strong>Ctrl+V</strong> to paste</li>
+      <li>Check both boxes to use it for new messages and replies, then <strong>Save</strong></li>
+    </ol>
+
+    <h3>Outlook for Mac</h3>
+    <ol>
+      <li>Fill in your information above and click <strong>"Copy Signature"</strong></li>
+      <li>In Outlook, go to <strong>Outlook &rarr; Settings &rarr; Signatures</strong></li>
+      <li>Click <strong>"+"</strong> to create a new signature</li>
+      <li>Click in the editor and press <strong>Cmd+V</strong> to paste, then close</li>
+    </ol>
+
+    <div class="note">
+      <strong>Tip:</strong> If images don't appear right away, make sure you're connected to the internet. Outlook loads signature images from the hosted URLs each time. If anything looks off, re-copy the signature from this page and paste again.
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ADDRESSES = {
+  "Madison":                    "3606 Corben Court, Madison, WI 53704",
+  "Watertown":                  "519 Aviation Way, Watertown, WI 53094",
+  "Juneau":                     "N3788 Hwy 26, Juneau, WI 53039",
+  "Madison-Watertown":          "3606 Corben Court, Madison, WI 53704",
+  "Madison-Juneau":             "3606 Corben Court, Madison, WI 53704",
+  "Watertown-Juneau":           "519 Aviation Way, Watertown, WI 53094",
+  "Madison-Watertown-Juneau":   "3606 Corben Court, Madison, WI 53704"
+};
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function buildHTML() {
+  const v = id => document.getElementById(id).value.trim();
+  const name = v('fullName') || 'Your Name';
+  const title = v('title') || 'Your Title';
+  const dept = v('department');
+  const loc = v('location');
+  const office = v('officePhone');
+  const cell = v('cellPhone');
+  const direct = v('directPhone');
+  const fax = v('fax');
+  const email = v('email');
+  const logoUrl = v('logoUrl');
+  const badgeUrl = v('badgeUrl');
+  const addr = ADDRESSES[loc] || ADDRESSES["Madison"];
+
+  // Build contact line (phone numbers + email on one line, separated by pipes)
+  let contactParts = [];
+  if (office) contactParts.push(esc(office));
+  if (direct) contactParts.push(esc(direct));
+  if (cell) contactParts.push(esc(cell));
+  if (fax) contactParts.push(`Fax ${esc(fax)}`);
+  const phoneLine = contactParts.join(`&nbsp;&nbsp;<span style="color:#B0B8C4;">|</span>&nbsp;&nbsp;`);
+
+  let titleLine = esc(title);
+  if (dept) titleLine += `<span style="color:#B0B8C4;">&nbsp;&nbsp;|&nbsp;&nbsp;</span>${esc(dept)}`;
+
+  // Contact line: phones | email
+  let contactLine = phoneLine;
+  if (email && contactLine) {
+    contactLine += `&nbsp;&nbsp;<span style="color:#B0B8C4;">|</span>&nbsp;&nbsp;<a href="mailto:${esc(email)}" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;text-decoration:none;">${esc(email)}</a>`;
+  } else if (email) {
+    contactLine = `<a href="mailto:${esc(email)}" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;text-decoration:none;">${esc(email)}</a>`;
+  }
+
+  const badgeCell = badgeUrl
+    ? `<td style="padding:0 0 0 12px;vertical-align:middle;"><img src="${esc(badgeUrl)}" alt="Celebrating 44 Years" width="56" height="56" style="display:block;border:0;width:56px;height:56px;" /></td>`
+    : '';
+
+  return `<!--[if mso]><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td><![endif]-->
+<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:520px;">
+  <tr>
+    <td style="padding:0 0 10px 0;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+        <tr>
+          ${logoUrl ? `<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="${esc(logoUrl)}" alt="WI Aviation" width="48" height="45" style="display:block;border:0;width:48px;height:45px;" /></td>` : ''}
+          <td style="vertical-align:top;">
+            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+              <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#1E2761;line-height:20px;padding:0;">${esc(name)}</td></tr>
+              <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;line-height:17px;padding:2px 0 0 0;">${titleLine}</td></tr>
+              ${contactLine ? `<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#3D4F5F;line-height:17px;padding:4px 0 0 0;">${contactLine}</td></tr>` : ''}
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;">
+        <tr><td style="border-top:2px solid #1E2761;font-size:0;line-height:0;height:8px;">&nbsp;</td></tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding:0;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+        <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AAD;line-height:16px;">${esc(addr)}&nbsp;&nbsp;<span style="color:#D0D5DD;">|</span>&nbsp;&nbsp;<a href="https://www.wisconsinaviation.com" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;text-decoration:none;">WisconsinAviation.com</a></td></tr>
+      </table>
+    </td>
+  </tr>
+  ${badgeUrl ? `<tr>
+    <td style="padding:10px 0 0 0;">
+      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+        <tr>${badgeCell}</tr>
+      </table>
+    </td>
+  </tr>` : ''}
+  <tr>
+    <td style="padding:12px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:#B0B8C4;line-height:13px;max-width:520px;">
+      This message is CONFIDENTIAL and may be a privileged communication. If you are not the intended recipient, please notify us immediately and delete the message and its attachments from your computer.
+    </td>
+  </tr>
+</table>
+<!--[if mso]></td></tr></table><![endif]-->`;
+}
+
+function render() {
+  document.getElementById('signature-preview').innerHTML = buildHTML();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+async function copySignature() {
+  const html = buildHTML();
+  try {
+    const blob = new Blob([html], { type: 'text/html' });
+    await navigator.clipboard.write([new ClipboardItem({ 'text/html': blob })]);
+    showToast('Signature copied! Paste into Outlook with Ctrl+V');
+  } catch (e) {
+    // Fallback: select the rendered preview and copy
+    const el = document.getElementById('signature-preview');
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    showToast('Signature copied! Paste into Outlook with Ctrl+V');
+  }
+}
+
+function copyHtml() {
+  navigator.clipboard.writeText(buildHTML()).then(() => {
+    showToast('HTML code copied to clipboard!');
+  });
+}
+
+window.addEventListener('DOMContentLoaded', render);
+</script>
+</body>
+</html>
