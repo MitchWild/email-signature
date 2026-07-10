@@ -459,7 +459,7 @@ function buildHTML() {
   if (badges.length > 0) {
     var badgeCells = '';
     for (var i = 0; i < badges.length; i++) {
-      var imgTag = '<img src="' + esc(badges[i]) + '" alt="" style="display:block;border:0;height:auto;max-height:90px;width:auto;max-width:230px;" />';
+      var imgTag = '<img src="' + esc(badges[i]) + '" alt="" height="90" style="display:block;border:0;height:auto;max-height:90px;width:auto;max-width:230px;" />';
       if (badgeLinks[badges[i]]) {
         imgTag = '<a href="' + badgeLinks[badges[i]] + '" target="_blank" style="text-decoration:none;">' + imgTag + '</a>';
       }
