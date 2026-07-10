@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WI Aviation — Email Signature Generator</title>
+<title>WI Aviation | Email Signature Generator</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -13,20 +13,24 @@
     min-height: 100vh;
   }
   .header {
-    background: #1E2761;
+    background: linear-gradient(135deg, #1E2761 0%, #1a3a6e 100%);
     padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
-  .header h1 { color: #fff; font-size: 22px; font-weight: 600; }
-  .header span { color: #CADCFC; font-size: 14px; }
+  .header img { height: 40px; width: auto; }
+  .header h1 { color: #fff; font-size: 20px; font-weight: 600; }
+  .header span { color: #CADCFC; font-size: 13px; display: block; margin-top: 2px; }
   .container {
     max-width: 1100px;
     margin: 32px auto;
     display: grid;
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 420px 1fr;
     gap: 32px;
     padding: 0 24px;
   }
-  @media (max-width: 860px) {
+  @media (max-width: 900px) {
     .container { grid-template-columns: 1fr; }
   }
   .panel {
@@ -47,15 +51,16 @@
     display: block; font-size: 11px; font-weight: 700;
     color: #5A6A7E; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
   }
-  .field input, .field select {
+  .field input, .field select, .field textarea {
     width: 100%; padding: 10px 12px; border: 1.5px solid #D0D5DD;
     border-radius: 8px; font-size: 14px; font-family: inherit; color: #1a1a2e;
     transition: border-color 0.2s;
   }
-  .field input:focus, .field select:focus {
+  .field textarea { resize: vertical; min-height: 40px; }
+  .field input:focus, .field select:focus, .field textarea:focus {
     outline: none; border-color: #2D9CDB; box-shadow: 0 0 0 3px rgba(45,156,219,0.12);
   }
-  .field input::placeholder { color: #B0B8C4; }
+  .field input::placeholder, .field textarea::placeholder { color: #B0B8C4; }
   .field .hint { font-size: 11px; color: #999; margin-top: 3px; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .subtitle { font-size: 12px; color: #999; margin: -14px 0 20px; }
@@ -80,6 +85,41 @@
     transition: all 0.3s ease; z-index: 999;
   }
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* Badge selection styles */
+  .section-label {
+    font-size: 11px; font-weight: 700; color: #5A6A7E;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; display: block;
+  }
+  .badge-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;
+  }
+  .badge-option {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border: 1.5px solid #E8ECF0; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s; background: #FAFBFC;
+  }
+  .badge-option:hover { border-color: #2D9CDB; background: #F0F8FF; }
+  .badge-option.selected { border-color: #2D9CDB; background: #EBF5FF; }
+  .badge-option input[type="checkbox"] { display: none; }
+  .badge-option .badge-check {
+    width: 18px; height: 18px; border: 2px solid #D0D5DD; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    transition: all 0.2s; background: #fff;
+  }
+  .badge-option.selected .badge-check {
+    background: #2D9CDB; border-color: #2D9CDB;
+  }
+  .badge-option.selected .badge-check::after {
+    content: '\2713'; color: #fff; font-size: 12px; font-weight: bold;
+  }
+  .badge-option img {
+    height: 36px; width: auto; max-width: 80px; object-fit: contain;
+  }
+  .badge-option .badge-label {
+    font-size: 12px; color: #3D4F5F; line-height: 1.3;
+  }
+
   .instructions {
     max-width: 1100px; margin: 0 auto 40px; padding: 0 24px;
   }
@@ -102,8 +142,11 @@
 <body>
 
 <div class="header">
-  <h1>Wisconsin Aviation &mdash; Email Signature Generator</h1>
-  <span>Create a professional, uniform email signature for Outlook</span>
+  <img src="https://mitchwild.github.io/email-signature/WA_Logo_Email_Sig-175pxl.jpg" alt="Wisconsin Aviation">
+  <div>
+    <h1>Email Signature Generator</h1>
+    <span>Create a professional, uniform signature for Outlook</span>
+  </div>
 </div>
 
 <div class="container">
@@ -165,18 +208,85 @@
       <input type="email" id="email" placeholder="name@wisav.com" oninput="render()">
     </div>
 
+    <!-- Custom tagline -->
+    <div class="field">
+      <label>Custom Text / Tagline (optional)</label>
+      <textarea id="customText" rows="2" oninput="render()" placeholder="e.g. Visit me in Building C Booth #3162 on July 20th &amp; 23rd"></textarea>
+      <div class="hint">Appears below your contact info — great for event promos, quotes, or announcements</div>
+    </div>
+
+    <!-- Badge selection -->
+    <span class="section-label">Signature Badges (select any)</span>
+    <div class="badge-grid">
+      <label class="badge-option" onclick="toggleBadge(this)">
+        <input type="checkbox" name="badge" value="45years">
+        <span class="badge-check"></span>
+        <img src="https://mitchwild.github.io/email-signature/WisAv-45yrs-option1.png" alt="45 Years">
+        <span class="badge-label">Celebrating<br>45 Years</span>
+      </label>
+      <label class="badge-option" onclick="toggleBadge(this)">
+        <input type="checkbox" name="badge" value="45seal">
+        <span class="badge-check"></span>
+        <img src="https://mitchwild.github.io/email-signature/WisAv-45yrs-option2.png" alt="45 Years Seal">
+        <span class="badge-label">45 Years<br>Dedication Seal</span>
+      </label>
+      <label class="badge-option" onclick="toggleBadge(this)">
+        <input type="checkbox" name="badge" value="facebook">
+        <span class="badge-check"></span>
+        <img src="https://mitchwild.github.io/email-signature/badge-facebook.png" alt="Facebook" onerror="this.style.display='none'">
+        <span class="badge-label">Like us on<br>Facebook</span>
+      </label>
+      <label class="badge-option" onclick="toggleBadge(this)">
+        <input type="checkbox" name="badge" value="safety">
+        <span class="badge-check"></span>
+        <img src="https://mitchwild.github.io/email-signature/badge-safety.png" alt="Safety Foundation" onerror="this.style.display='none'">
+        <span class="badge-label">Air Charter<br>Safety Foundation</span>
+      </label>
+      <label class="badge-option" onclick="toggleBadge(this)">
+        <input type="checkbox" name="badge" value="eaa">
+        <span class="badge-check"></span>
+        <img src="https://mitchwild.github.io/email-signature/badge-eaa-2026.png" alt="EAA AirVenture" onerror="this.style.display='none'">
+        <span class="badge-label">EAA AirVenture<br>Oshkosh 2026</span>
+      </label>
+    </div>
+
+    <!-- Custom badge URL -->
+    <div class="field">
+      <label>Custom Badge Image URL (optional)</label>
+      <input type="text" id="customBadgeUrl" placeholder="Paste an image URL here" oninput="render()">
+      <div class="hint">Email signatures require images to be hosted online &mdash; you can't upload a file directly. Right-click any image on the web, select "Copy image address," and paste it here. If you have an image file that isn't hosted yet, send it to Mitchell Wild at <a href="mailto:mitchw@wisav.com" style="color:#2D9CDB;">mitchw@wisav.com</a> and he'll generate a URL for you.</div>
+    </div>
+
     <!-- Admin section: image URLs -->
     <details class="admin">
       <summary>Image Settings (Admin Only)</summary>
       <div class="field">
         <label>WI Aviation Logo URL</label>
-        <input type="text" id="logoUrl" value="https://www.wisconsinaviation.com/files/images/small-logo.png" oninput="render()">
-        <div class="hint">The blue "W" icon from wisconsinaviation.com</div>
+        <input type="text" id="logoUrl" value="https://mitchwild.github.io/email-signature/WA_Logo_Email_Sig-175pxl.jpg" oninput="render()">
+        <div class="hint">Hosted on GitHub Pages</div>
       </div>
       <div class="field">
-        <label>"Celebrating 44 Years" Badge URL</label>
-        <input type="text" id="badgeUrl" value="" placeholder="Paste badge image URL here" oninput="render()">
-        <div class="hint">Leave blank to hide. Add the URL once marketing provides the image.</div>
+        <label>"Celebrating 45 Years" Badge URL</label>
+        <input type="text" id="badgeUrl45" value="https://mitchwild.github.io/email-signature/WisAv-45yrs-option1.png" oninput="render()">
+      </div>
+      <div class="field">
+        <label>"45 Years Dedication Seal" Badge URL</label>
+        <input type="text" id="badgeUrl45seal" value="https://mitchwild.github.io/email-signature/WisAv-45yrs-option2.png" oninput="render()">
+      </div>
+      <div class="field">
+        <label>"Like us on Facebook" Badge URL</label>
+        <input type="text" id="badgeUrlFacebook" value="https://mitchwild.github.io/email-signature/badge-facebook.png" oninput="render()">
+        <div class="hint">Upload badge-facebook.png to the GitHub repo</div>
+      </div>
+      <div class="field">
+        <label>"Air Charter Safety Foundation" Badge URL</label>
+        <input type="text" id="badgeUrlSafety" value="https://mitchwild.github.io/email-signature/badge-safety.png" oninput="render()">
+        <div class="hint">Upload badge-safety.png to the GitHub repo</div>
+      </div>
+      <div class="field">
+        <label>"EAA AirVenture Oshkosh 2026" Badge URL</label>
+        <input type="text" id="badgeUrlEaa" value="https://mitchwild.github.io/email-signature/badge-eaa-2026.png" oninput="render()">
+        <div class="hint">Upload badge-eaa-2026.png to the GitHub repo</div>
       </div>
     </details>
   </div>
@@ -224,6 +334,13 @@
       <li>Click in the editor and press <strong>Cmd+V</strong> to paste, then close</li>
     </ol>
 
+    <h3>Adding a Custom Badge Image</h3>
+    <ol>
+      <li>Email signatures need images hosted online &mdash; you can't attach a file from your computer</li>
+      <li>If your image is already on a website, right-click it, select <strong>"Copy image address"</strong>, and paste the URL into the Custom Badge field above</li>
+      <li>If you have an image file that isn't online yet, send it to <strong>Mitchell Wild</strong> at <a href="mailto:mitchw@wisav.com">mitchw@wisav.com</a> and he'll upload it and give you a URL to paste in</li>
+    </ol>
+
     <div class="note">
       <strong>Tip:</strong> If images don't appear right away, make sure you're connected to the internet. Outlook loads signature images from the hosted URLs each time. If anything looks off, re-copy the signature from this page and paste again.
     </div>
@@ -243,92 +360,119 @@ const ADDRESSES = {
   "Madison-Watertown-Juneau":   "3606 Corben Court, Madison, WI 53704"
 };
 
+// Badge URL mapping — pulls from admin inputs
+function getBadgeUrls() {
+  return {
+    "45years":  document.getElementById('badgeUrl45').value.trim(),
+    "45seal":   document.getElementById('badgeUrl45seal').value.trim(),
+    "facebook": document.getElementById('badgeUrlFacebook').value.trim(),
+    "safety":   document.getElementById('badgeUrlSafety').value.trim(),
+    "eaa":      document.getElementById('badgeUrlEaa').value.trim()
+  };
+}
+
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function buildHTML() {
-  const v = id => document.getElementById(id).value.trim();
-  const name = v('fullName') || 'Your Name';
-  const title = v('title') || 'Your Title';
-  const dept = v('department');
-  const loc = v('location');
-  const office = v('officePhone');
-  const cell = v('cellPhone');
-  const direct = v('directPhone');
-  const fax = v('fax');
-  const email = v('email');
-  const logoUrl = v('logoUrl');
-  const badgeUrl = v('badgeUrl');
-  const addr = ADDRESSES[loc] || ADDRESSES["Madison"];
+function toggleBadge(el) {
+  setTimeout(function() {
+    var cb = el.querySelector('input[type="checkbox"]');
+    if (cb.checked) {
+      el.classList.add('selected');
+    } else {
+      el.classList.remove('selected');
+    }
+    render();
+  }, 0);
+}
 
-  // Build contact line (phone numbers + email on one line, separated by pipes)
-  let contactParts = [];
+function getSelectedBadges() {
+  var urls = getBadgeUrls();
+  var selected = [];
+  document.querySelectorAll('input[name="badge"]:checked').forEach(function(cb) {
+    var url = urls[cb.value];
+    if (url) selected.push(url);
+  });
+  var custom = document.getElementById('customBadgeUrl').value.trim();
+  if (custom) selected.push(custom);
+  return selected;
+}
+
+function buildHTML() {
+  var v = function(id) { return document.getElementById(id).value.trim(); };
+  var name = v('fullName') || 'Your Name';
+  var title = v('title') || 'Your Title';
+  var dept = v('department');
+  var loc = v('location');
+  var office = v('officePhone');
+  var cell = v('cellPhone');
+  var direct = v('directPhone');
+  var fax = v('fax');
+  var email = v('email');
+  var logoUrl = v('logoUrl');
+  var customText = v('customText');
+  var addr = ADDRESSES[loc] || ADDRESSES["Madison"];
+  var badges = getSelectedBadges();
+
+  // Build contact line
+  var contactParts = [];
   if (office) contactParts.push(esc(office));
   if (direct) contactParts.push(esc(direct));
   if (cell) contactParts.push(esc(cell));
-  if (fax) contactParts.push(`Fax ${esc(fax)}`);
-  const phoneLine = contactParts.join(`&nbsp;&nbsp;<span style="color:#B0B8C4;">|</span>&nbsp;&nbsp;`);
+  if (fax) contactParts.push('Fax ' + esc(fax));
+  var phoneLine = contactParts.join('&nbsp;&nbsp;<span style="color:#B0B8C4;">|</span>&nbsp;&nbsp;');
 
-  let titleLine = esc(title);
-  if (dept) titleLine += `<span style="color:#B0B8C4;">&nbsp;&nbsp;|&nbsp;&nbsp;</span>${esc(dept)}`;
+  var titleLine = esc(title);
+  if (dept) titleLine += '<span style="color:#B0B8C4;">&nbsp;&nbsp;|&nbsp;&nbsp;</span>' + esc(dept);
 
-  // Contact line: phones | email
-  let contactLine = phoneLine;
+  var contactLine = phoneLine;
   if (email && contactLine) {
-    contactLine += `&nbsp;&nbsp;<span style="color:#B0B8C4;">|</span>&nbsp;&nbsp;<a href="mailto:${esc(email)}" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;text-decoration:none;">${esc(email)}</a>`;
+    contactLine += '&nbsp;&nbsp;<span style="color:#B0B8C4;">|</span>&nbsp;&nbsp;<a href="mailto:' + esc(email) + '" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;text-decoration:none;">' + esc(email) + '</a>';
   } else if (email) {
-    contactLine = `<a href="mailto:${esc(email)}" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;text-decoration:none;">${esc(email)}</a>`;
+    contactLine = '<a href="mailto:' + esc(email) + '" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;text-decoration:none;">' + esc(email) + '</a>';
   }
 
-  const badgeCell = badgeUrl
-    ? `<td style="padding:0 0 0 12px;vertical-align:middle;"><img src="${esc(badgeUrl)}" alt="Celebrating 44 Years" width="56" height="56" style="display:block;border:0;width:56px;height:56px;" /></td>`
-    : '';
+  // Custom text row
+  var customTextRow = '';
+  if (customText) {
+    customTextRow = '<tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;font-weight:bold;font-style:italic;line-height:17px;">' + esc(customText) + '</td></tr>';
+  }
 
-  return `<!--[if mso]><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td><![endif]-->
-<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:520px;">
-  <tr>
-    <td style="padding:0 0 10px 0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-        <tr>
-          ${logoUrl ? `<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="${esc(logoUrl)}" alt="WI Aviation" width="48" height="45" style="display:block;border:0;width:48px;height:45px;" /></td>` : ''}
-          <td style="vertical-align:top;">
-            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-              <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#1E2761;line-height:20px;padding:0;">${esc(name)}</td></tr>
-              <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;line-height:17px;padding:2px 0 0 0;">${titleLine}</td></tr>
-              ${contactLine ? `<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#3D4F5F;line-height:17px;padding:4px 0 0 0;">${contactLine}</td></tr>` : ''}
-            </table>
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td style="padding:0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;">
-        <tr><td style="border-top:2px solid #1E2761;font-size:0;line-height:0;height:8px;">&nbsp;</td></tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td style="padding:0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-        <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AAD;line-height:16px;">${esc(addr)}&nbsp;&nbsp;<span style="color:#D0D5DD;">|</span>&nbsp;&nbsp;<a href="https://www.wisconsinaviation.com" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;text-decoration:none;">WisconsinAviation.com</a></td></tr>
-      </table>
-    </td>
-  </tr>
-  ${badgeUrl ? `<tr>
-    <td style="padding:10px 0 0 0;">
-      <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-        <tr>${badgeCell}</tr>
-      </table>
-    </td>
-  </tr>` : ''}
-  <tr>
-    <td style="padding:12px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:#B0B8C4;line-height:13px;max-width:520px;">
-      This message is CONFIDENTIAL and may be a privileged communication. If you are not the intended recipient, please notify us immediately and delete the message and its attachments from your computer.
-    </td>
-  </tr>
-</table>
-<!--[if mso]></td></tr></table><![endif]-->`;
+  // Badge row
+  var badgeRow = '';
+  if (badges.length > 0) {
+    var badgeCells = '';
+    for (var i = 0; i < badges.length; i++) {
+      badgeCells += '<td style="padding:0 10px 0 0;vertical-align:middle;"><img src="' + esc(badges[i]) + '" alt="" width="70" style="display:block;border:0;height:auto;max-height:60px;width:auto;max-width:90px;" /></td>';
+    }
+    badgeRow = '<tr><td style="padding:10px 0 0 0;"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr>' + badgeCells + '</tr></table></td></tr>';
+  }
+
+  var logoCell = '';
+  if (logoUrl) {
+    logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="48" height="45" style="display:block;border:0;width:48px;height:45px;" /></td>';
+  }
+
+  return '<!--[if mso]><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td><![endif]-->' +
+'<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:520px;">' +
+  '<tr><td style="padding:0 0 10px 0;">' +
+    '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr>' +
+      logoCell +
+      '<td style="vertical-align:top;">' +
+        '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">' +
+          '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#1E2761;line-height:20px;padding:0;">' + esc(name) + '</td></tr>' +
+          '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;line-height:17px;padding:2px 0 0 0;">' + titleLine + '</td></tr>' +
+          (contactLine ? '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#3D4F5F;line-height:17px;padding:4px 0 0 0;">' + contactLine + '</td></tr>' : '') +
+        '</table>' +
+      '</td>' +
+    '</tr></table>' +
+  '</td></tr>' +
+  customTextRow +
+  '<tr><td style="padding:0;"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;"><tr><td style="border-top:2px solid #1E2761;font-size:0;line-height:0;height:8px;">&nbsp;</td></tr></table></td></tr>' +
+  '<tr><td style="padding:0;"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AAD;line-height:16px;">' + esc(addr) + '&nbsp;&nbsp;<span style="color:#D0D5DD;">|</span>&nbsp;&nbsp;<a href="https://www.wisconsinaviation.com" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;text-decoration:none;">WisconsinAviation.com</a></td></tr></table></td></tr>' +
+  badgeRow +
+  '<tr><td style="padding:12px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:#B0B8C4;line-height:13px;max-width:520px;">This message is CONFIDENTIAL and may be a privileged communication. If you are not the intended recipient, please notify us immediately and delete the message and its attachments from your computer.</td></tr>' +
+'</table>' +
+'<!--[if mso]></td></tr></table><![endif]-->';
 }
 
 function render() {
@@ -336,24 +480,24 @@ function render() {
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast');
+  var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2400);
+  setTimeout(function() { t.classList.remove('show'); }, 2400);
 }
 
-async function copySignature() {
-  const html = buildHTML();
+function copySignature() {
+  var html = buildHTML();
   try {
-    const blob = new Blob([html], { type: 'text/html' });
-    await navigator.clipboard.write([new ClipboardItem({ 'text/html': blob })]);
-    showToast('Signature copied! Paste into Outlook with Ctrl+V');
+    var blob = new Blob([html], { type: 'text/html' });
+    navigator.clipboard.write([new ClipboardItem({ 'text/html': blob })]).then(function() {
+      showToast('Signature copied! Paste into Outlook with Ctrl+V');
+    });
   } catch (e) {
-    // Fallback: select the rendered preview and copy
-    const el = document.getElementById('signature-preview');
-    const range = document.createRange();
+    var el = document.getElementById('signature-preview');
+    var range = document.createRange();
     range.selectNodeContents(el);
-    const sel = window.getSelection();
+    var sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
     document.execCommand('copy');
@@ -363,12 +507,19 @@ async function copySignature() {
 }
 
 function copyHtml() {
-  navigator.clipboard.writeText(buildHTML()).then(() => {
+  navigator.clipboard.writeText(buildHTML()).then(function() {
     showToast('HTML code copied to clipboard!');
   });
 }
 
-window.addEventListener('DOMContentLoaded', render);
+// Initialize badge states on load
+window.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.badge-option').forEach(function(opt) {
+    var cb = opt.querySelector('input[type="checkbox"]');
+    if (cb.checked) opt.classList.add('selected');
+  });
+  render();
+});
 </script>
 </body>
 </html>
