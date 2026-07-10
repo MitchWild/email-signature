@@ -456,10 +456,17 @@ function buildHTML() {
   badgeLinks[badgeUrls["facebook"]] = 'https://www.facebook.com/pages/Wisconsin-Aviation/155131234525169';
   badgeLinks[badgeUrls["safety"]] = 'https://acsf.aero';
   badgeLinks[badgeUrls["eaa"]] = 'https://www.eaa.org/airventure';
+  var badgeDims = {};
+  badgeDims[badgeUrls["45years"]] = {w:131,h:90};
+  badgeDims[badgeUrls["45seal"]] = {w:90,h:90};
+  badgeDims[badgeUrls["facebook"]] = {w:230,h:82};
+  badgeDims[badgeUrls["safety"]] = {w:202,h:90};
+  badgeDims[badgeUrls["eaa"]] = {w:204,h:90};
   if (badges.length > 0) {
     var badgeCells = '';
     for (var i = 0; i < badges.length; i++) {
-      var imgTag = '<img src="' + esc(badges[i]) + '" alt="" height="90" style="display:block;border:0;height:auto;max-height:90px;width:auto;max-width:230px;" />';
+      var dim = badgeDims[badges[i]] || {w:131,h:90};
+      var imgTag = '<img src="' + esc(badges[i]) + '" alt="" width="' + dim.w + '" height="' + dim.h + '" style="display:block;border:0;width:' + dim.w + 'px;height:' + dim.h + 'px;" />';
       if (badgeLinks[badges[i]]) {
         imgTag = '<a href="' + badgeLinks[badges[i]] + '" target="_blank" style="text-decoration:none;">' + imgTag + '</a>';
       }
