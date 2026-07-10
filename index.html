@@ -119,6 +119,15 @@
   .badge-option .badge-label {
     font-size: 12px; color: #3D4F5F; line-height: 1.3;
   }
+  .logo-choice { display: flex; gap: 12px; margin-bottom: 16px; }
+  .logo-choice label {
+    flex: 1; display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border: 1.5px solid #E8ECF0; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s; background: #FAFBFC; font-size: 13px; color: #3D4F5F;
+  }
+  .logo-choice label:hover { border-color: #2D9CDB; background: #F0F8FF; }
+  .logo-choice input[type="radio"]:checked + span { font-weight: 600; color: #1E2761; }
+  .logo-choice label:has(input:checked) { border-color: #2D9CDB; background: #EBF5FF; }
 
   .instructions {
     max-width: 1100px; margin: 0 auto 40px; padding: 0 24px;
@@ -162,6 +171,20 @@
     <div class="field">
       <label>Title</label>
       <input type="text" id="title" placeholder="e.g. Air Charter Specialist" oninput="render()">
+    </div>
+
+    <div class="field">
+      <label>Company Name</label>
+      <input type="text" id="companyName" value="Wisconsin Aviation" oninput="render()">
+      <div class="hint">Shown on the title line when using the W logo</div>
+    </div>
+
+    <div class="field">
+      <label>Logo Style</label>
+      <div class="logo-choice">
+        <label><input type="radio" name="logoStyle" value="full" onchange="render()" checked> <span>Full WI Aviation logo</span></label>
+        <label><input type="radio" name="logoStyle" value="wlogo" onchange="render()"> <span>W logo + company name</span></label>
+      </div>
     </div>
 
     <div class="field">
@@ -261,9 +284,14 @@
     <details class="admin">
       <summary>Image Settings (Admin Only)</summary>
       <div class="field">
-        <label>WI Aviation Logo URL</label>
+        <label>W Logo URL</label>
         <input type="text" id="logoUrl" value="https://mitchwild.github.io/email-signature/WA_W_Logo.png" oninput="render()">
-        <div class="hint">Hosted on GitHub Pages</div>
+        <div class="hint">Standalone W mark</div>
+      </div>
+      <div class="field">
+        <label>Full WI Aviation Logo URL</label>
+        <input type="text" id="logoUrlFull" value="https://mitchwild.github.io/email-signature/WA_Logo_Email_Sig-175pxl.jpg" oninput="render()">
+        <div class="hint">Full logo with "Wisconsin Aviation" text</div>
       </div>
       <div class="field">
         <label>"Celebrating 45 Years" Badge URL</label>
@@ -408,7 +436,9 @@ function buildHTML() {
   var direct = v('directPhone');
   var fax = v('fax');
   var email = v('email');
-  var logoUrl = v('logoUrl');
+  var logoStyle = document.querySelector('input[name="logoStyle"]:checked').value;
+  var logoUrl = logoStyle === 'full' ? v('logoUrlFull') : v('logoUrl');
+  var companyName = v('companyName');
   var customText = v('customText');
   var addr = ADDRESSES[loc] || ADDRESSES["Madison"];
   var badges = getSelectedBadges();
@@ -423,6 +453,9 @@ function buildHTML() {
 
   var titleLine = esc(title);
   if (dept) titleLine += '<span style="color:#B0B8C4;">&nbsp;&nbsp;|&nbsp;&nbsp;</span>' + esc(dept);
+  if (logoStyle === 'wlogo' && companyName) {
+    titleLine += '<span style="color:#B0B8C4;">&nbsp;&nbsp;|&nbsp;&nbsp;</span>' + esc(companyName);
+  }
 
   var contactLine = phoneLine;
   if (email && contactLine) {
@@ -460,7 +493,11 @@ function buildHTML() {
 
   var logoCell = '';
   if (logoUrl) {
-    logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="55" height="58" style="display:block;border:0;width:55px;height:58px;" /></td>';
+    if (logoStyle === 'full') {
+      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logoUrl) + '" alt="Wisconsin Aviation" width="130" height="55" style="display:block;border:0;width:130px;height:auto;max-height:55px;" /></td>';
+    } else {
+      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="55" height="58" style="display:block;border:0;width:55px;height:58px;" /></td>';
+    }
   }
 
   return '<!--[if mso]><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td><![endif]-->' +
