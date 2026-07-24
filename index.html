@@ -120,6 +120,20 @@
     font-size: 12px; color: #3D4F5F; line-height: 1.3;
   }
 
+  /* Logo style picker */
+  .logo-choices {
+    display: flex; gap: 12px; margin-bottom: 16px;
+  }
+  .logo-choice {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+    padding: 12px; border: 2px solid #E8ECF0; border-radius: 10px;
+    cursor: pointer; transition: all 0.2s; background: #FAFBFC;
+  }
+  .logo-choice:hover { border-color: #2D9CDB; background: #F0F8FF; }
+  .logo-choice.active { border-color: #2D9CDB; background: #EBF5FF; }
+  .logo-choice img { height: 48px; width: auto; object-fit: contain; }
+  .logo-choice span { font-size: 11px; color: #5A6A7E; text-align: center; }
+
   .instructions {
     max-width: 1100px; margin: 0 auto 40px; padding: 0 24px;
   }
@@ -214,6 +228,20 @@
       <input type="email" id="email" placeholder="name@wisav.com" oninput="render()">
     </div>
 
+    <!-- Logo style picker -->
+    <span class="section-label">Signature Logo</span>
+    <div class="logo-choices">
+      <div class="logo-choice active" onclick="pickLogo('wlogo')">
+        <img src="https://mitchwild.github.io/email-signature/WA_W_Logo.png" alt="W Logo">
+        <span>W Logo</span>
+      </div>
+      <div class="logo-choice" onclick="pickLogo('45years')">
+        <img src="https://mitchwild.github.io/email-signature/WA_45Years_Logo.png" alt="45 Years">
+        <span>Celebrating<br>45 Years</span>
+      </div>
+    </div>
+    <input type="hidden" id="logoStyle" value="wlogo">
+
     <!-- Custom tagline -->
     <div class="field">
       <label>Custom Text / Tagline (optional)</label>
@@ -269,7 +297,12 @@
       <div class="field">
         <label>W Logo URL</label>
         <input type="text" id="logoUrl" value="https://mitchwild.github.io/email-signature/WA_W_Logo.png" oninput="render()">
-        <div class="hint">Standalone W mark</div>
+        <div class="hint">Standalone W mark (55x58)</div>
+      </div>
+      <div class="field">
+        <label>"Celebrating 45 Years" Logo URL</label>
+        <input type="text" id="logoUrl45" value="https://mitchwild.github.io/email-signature/WA_45Years_Logo.png" oninput="render()">
+        <div class="hint">45 Years logo for top-left position (84x58)</div>
       </div>
       <div class="field">
         <label>"Celebrating 45 Years" Badge URL</label>
@@ -379,6 +412,13 @@ function getBadgeUrls() {
 
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+function pickLogo(style) {
+  document.getElementById('logoStyle').value = style;
+  document.querySelectorAll('.logo-choice').forEach(function(el) { el.classList.remove('active'); });
+  event.currentTarget.classList.add('active');
+  render();
+}
+
 function toggleBadge(el) {
   setTimeout(function() {
     var cb = el.querySelector('input[type="checkbox"]');
@@ -457,7 +497,7 @@ function buildHTML() {
   badgeLinks[badgeUrls["safety"]] = 'https://acsf.aero';
   badgeLinks[badgeUrls["eaa"]] = 'https://www.eaa.org/airventure';
   var badgeDims = {};
-  badgeDims[badgeUrls["45years"]] = {w:131,h:90};
+  badgeDims[badgeUrls["45years"]] = {w:188,h:130};
   badgeDims[badgeUrls["45seal"]] = {w:130,h:130};
   badgeDims[badgeUrls["facebook"]] = {w:160,h:57};
   badgeDims[badgeUrls["safety"]] = {w:202,h:90};
@@ -476,8 +516,16 @@ function buildHTML() {
   }
 
   var logoCell = '';
-  if (logoUrl) {
-    logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="55" height="58" style="display:block;border:0;width:55px;height:58px;" /></td>';
+  var logoStyle = document.getElementById('logoStyle').value;
+  if (logoStyle === '45years') {
+    var logo45Url = document.getElementById('logoUrl45').value.trim();
+    if (logo45Url) {
+      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logo45Url) + '" alt="Celebrating 45 Years" width="84" height="58" style="display:block;border:0;width:84px;height:58px;" /></td>';
+    }
+  } else {
+    if (logoUrl) {
+      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="55" height="58" style="display:block;border:0;width:55px;height:58px;" /></td>';
+    }
   }
 
   return '<!--[if mso]><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td><![endif]-->' +
