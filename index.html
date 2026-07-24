@@ -548,11 +548,11 @@ function buildHTML() {
   if (logoStyle === '45years') {
     var logo45Url = document.getElementById('logoUrl45').value.trim();
     if (logo45Url) {
-      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logo45Url) + '" alt="Celebrating 45 Years" width="84" height="58" style="display:block;border:0;width:84px;height:58px;" /></td>';
+      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logo45Url) + '" alt="Celebrating 45 Years" width="84" height="58" style="display:block;border:0;width:84px;height:58px;" /></a></td>';
     }
   } else {
     if (logoUrl) {
-      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="55" height="58" style="display:block;border:0;width:55px;height:58px;" /></td>';
+      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="55" height="58" style="display:block;border:0;width:55px;height:58px;" /></a></td>';
     }
   }
 
