@@ -182,6 +182,13 @@
       <label>Company Name</label>
       <input type="text" id="companyName" value="Wisconsin Aviation" oninput="render()">
       <div class="hint">Shown on the title line next to your title</div>
+      <div id="stackedCompanyToggle" style="display:none;margin-top:8px;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#3D4F5F;">
+          <input type="checkbox" id="stackedShowCompany" onchange="render()" style="width:16px;height:16px;accent-color:#2D9CDB;">
+          Show company name after title
+        </label>
+        <div class="hint" style="margin-top:2px;margin-left:24px;">Optional — the stacked logo already displays &ldquo;Wisconsin Aviation&rdquo;</div>
+      </div>
     </div>
 
     <div class="field">
@@ -245,13 +252,6 @@
       </div>
     </div>
     <input type="hidden" id="logoStyle" value="wlogo">
-    <div id="stackedCompanyToggle" style="display:none;margin:-8px 0 16px 0;">
-      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#3D4F5F;">
-        <input type="checkbox" id="stackedShowCompany" onchange="render()" style="width:16px;height:16px;accent-color:#2D9CDB;">
-        Show company name after title
-      </label>
-      <div class="hint" style="margin-top:2px;margin-left:24px;">Optional — the stacked logo already displays &ldquo;Wisconsin Aviation&rdquo;</div>
-    </div>
 
     <!-- Custom tagline -->
     <div class="field">
