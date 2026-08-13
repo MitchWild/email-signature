@@ -604,10 +604,13 @@ function buildHTML() {
 
   var logoCell = '';
   var logoStyle = document.getElementById('logoStyle').value;
+  var socialsOn = document.getElementById('showSocials').checked && (document.getElementById('socialFbUrl').value.trim() || document.getElementById('socialIgUrl').value.trim() || document.getElementById('socialLiUrl').value.trim());
   if (logoStyle === '45years') {
     var logo45Url = document.getElementById('logoUrl45').value.trim();
     if (logo45Url) {
-      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logo45Url) + '" alt="Celebrating 45 Years" width="130" height="90" style="display:block;border:0;width:130px;height:90px;" /></a></td>';
+      var w45 = socialsOn ? 130 : 110;
+      var h45 = socialsOn ? 90 : 76;
+      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logo45Url) + '" alt="Celebrating 45 Years" width="' + w45 + '" height="' + h45 + '" style="display:block;border:0;width:' + w45 + 'px;height:' + h45 + 'px;" /></a></td>';
     }
   } else if (logoStyle === 'stacked') {
     var logoStackedUrl = document.getElementById('logoUrlStacked').value.trim();
@@ -616,7 +619,7 @@ function buildHTML() {
       return '<!--[if mso]><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td><![endif]-->' +
 '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:560px;">' +
   '<tr>' +
-    '<td style="vertical-align:top;padding:0 18px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logoStackedUrl) + '" alt="Wisconsin Aviation" width="150" height="89" style="display:block;border:0;width:150px;height:89px;" /></a></td>' +
+    '<td style="vertical-align:top;padding:0 18px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logoStackedUrl) + '" alt="Wisconsin Aviation" width="' + (socialsOn ? 170 : 150) + '" height="' + (socialsOn ? 101 : 89) + '" style="display:block;border:0;width:' + (socialsOn ? 170 : 150) + 'px;height:' + (socialsOn ? 101 : 89) + 'px;" /></a></td>' +
     '<td style="vertical-align:top;">' +
       '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">' +
         '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#1E2761;line-height:20px;padding:0;">' + esc(name) + '</td></tr>' +
@@ -637,7 +640,9 @@ function buildHTML() {
     }
   } else {
     if (logoUrl) {
-      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="55" height="58" style="display:block;border:0;width:55px;height:58px;" /></a></td>';
+      var wW = socialsOn ? 65 : 55;
+      var hW = socialsOn ? 69 : 58;
+      logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logoUrl) + '" alt="WI Aviation" width="' + wW + '" height="' + hW + '" style="display:block;border:0;width:' + wW + 'px;height:' + hW + 'px;" /></a></td>';
     }
   }
 
