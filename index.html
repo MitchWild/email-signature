@@ -68,6 +68,7 @@
   .subtitle { font-size: 12px; color: #999; margin: -14px 0 20px; }
   #signature-preview {
     border: 1px solid #eee; border-radius: 8px; padding: 24px; background: #fff; min-height: 160px;
+    min-width: 580px; overflow-x: auto;
   }
   .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
   .btn {
@@ -376,7 +377,7 @@
 
   <!-- RIGHT: Preview -->
   <div class="preview-wrap">
-    <div class="panel" style="position:sticky;top:24px;">
+    <div class="panel" style="position:sticky;top:24px;overflow-x:auto;">
       <h2>Live Preview</h2>
       <p class="subtitle">This is exactly how your signature will look in emails</p>
       <div id="signature-preview"></div>
