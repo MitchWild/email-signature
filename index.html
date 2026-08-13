@@ -26,12 +26,14 @@
     max-width: 1100px;
     margin: 32px auto;
     display: grid;
-    grid-template-columns: 420px 1fr;
+    grid-template-columns: 380px 1fr;
     gap: 32px;
     padding: 0 24px;
   }
-  @media (max-width: 900px) {
+  @media (max-width: 700px) {
     .container { grid-template-columns: 1fr; }
+    .preview-wrap { order: -1; }
+    .preview-wrap > .panel { position: sticky; top: 0; z-index: 10; max-height: 50vh; overflow-y: auto; }
   }
   .panel {
     background: #fff;
@@ -372,12 +374,14 @@
   </div>
 
   <!-- RIGHT: Preview -->
-  <div class="panel" style="position:sticky;top:24px;">
-    <h2>Live Preview</h2>
-    <p class="subtitle">This is exactly how your signature will look in emails</p>
-    <div id="signature-preview"></div>
-    <div class="btn-group">
-      <button class="btn btn-primary" onclick="copySignature()">Copy Signature</button>
+  <div class="preview-wrap">
+    <div class="panel" style="position:sticky;top:24px;">
+      <h2>Live Preview</h2>
+      <p class="subtitle">This is exactly how your signature will look in emails</p>
+      <div id="signature-preview"></div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="copySignature()">Copy Signature</button>
+      </div>
     </div>
   </div>
 </div>
