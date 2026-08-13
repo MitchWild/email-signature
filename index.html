@@ -238,7 +238,11 @@
     <!-- Logo style picker -->
     <span class="section-label">Signature Logo</span>
     <div class="logo-choices">
-      <div class="logo-choice active" onclick="pickLogo('wlogo')">
+      <div class="logo-choice active" onclick="pickLogo('stacked')">
+        <img src="https://mitchwild.github.io/email-signature/WA_Stacked_Logo.png" alt="Stacked Logo">
+        <span>Stacked<br>Logo</span>
+      </div>
+      <div class="logo-choice" onclick="pickLogo('wlogo')">
         <img src="https://mitchwild.github.io/email-signature/WA_W_Logo.png" alt="W Logo">
         <span>W Logo</span>
       </div>
@@ -246,12 +250,8 @@
         <img src="https://mitchwild.github.io/email-signature/WA_45Years_Logo.png" alt="45 Years">
         <span>Celebrating<br>45 Years</span>
       </div>
-      <div class="logo-choice" onclick="pickLogo('stacked')">
-        <img src="https://mitchwild.github.io/email-signature/WA_Stacked_Logo.png" alt="Stacked Logo">
-        <span>Stacked<br>Logo</span>
-      </div>
     </div>
-    <input type="hidden" id="logoStyle" value="wlogo">
+    <input type="hidden" id="logoStyle" value="stacked">
 
     <!-- Custom tagline -->
     <div class="field">
@@ -665,6 +665,8 @@ window.addEventListener('DOMContentLoaded', function() {
     var cb = opt.querySelector('input[type="checkbox"]');
     if (cb.checked) opt.classList.add('selected');
   });
+  // Show company name toggle since stacked is default
+  document.getElementById('stackedCompanyToggle').style.display = 'block';
   render();
 });
 </script>
