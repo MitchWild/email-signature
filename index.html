@@ -239,6 +239,10 @@
         <img src="https://mitchwild.github.io/email-signature/WA_45Years_Logo.png" alt="45 Years">
         <span>Celebrating<br>45 Years</span>
       </div>
+      <div class="logo-choice" onclick="pickLogo('stacked')">
+        <img src="https://mitchwild.github.io/email-signature/WA_Stacked_Logo.png" alt="Stacked Logo">
+        <span>Stacked<br>Logo</span>
+      </div>
     </div>
     <input type="hidden" id="logoStyle" value="wlogo">
 
@@ -307,6 +311,11 @@
         <label>"Celebrating 45 Years" Logo URL</label>
         <input type="text" id="logoUrl45" value="https://mitchwild.github.io/email-signature/WA_45Years_Logo.png" oninput="render()">
         <div class="hint">45 Years logo for top-left position (84x58)</div>
+      </div>
+      <div class="field">
+        <label>Stacked Logo URL</label>
+        <input type="text" id="logoUrlStacked" value="https://mitchwild.github.io/email-signature/WA_Stacked_Logo.png" oninput="render()">
+        <div class="hint">Wisconsin Aviation stacked logo (150x89)</div>
       </div>
       <div class="field">
         <label>"Celebrating 45 Years" Badge URL</label>
@@ -549,6 +558,31 @@ function buildHTML() {
     var logo45Url = document.getElementById('logoUrl45').value.trim();
     if (logo45Url) {
       logoCell = '<td style="vertical-align:top;padding:2px 14px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logo45Url) + '" alt="Celebrating 45 Years" width="84" height="58" style="display:block;border:0;width:84px;height:58px;" /></a></td>';
+    }
+  } else if (logoStyle === 'stacked') {
+    var logoStackedUrl = document.getElementById('logoUrlStacked').value.trim();
+    if (logoStackedUrl) {
+      // Stacked layout: logo on left, ALL content (text + line + address) on right
+      return '<!--[if mso]><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td><![endif]-->' +
+'<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:560px;">' +
+  '<tr>' +
+    '<td style="vertical-align:top;padding:0 18px 0 0;"><a href="https://www.wisconsinaviation.com" target="_blank" style="text-decoration:none;"><img src="' + esc(logoStackedUrl) + '" alt="Wisconsin Aviation" width="150" height="89" style="display:block;border:0;width:150px;height:89px;" /></a></td>' +
+    '<td style="vertical-align:top;">' +
+      '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">' +
+        '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#1E2761;line-height:20px;padding:0;">' + esc(name) + '</td></tr>' +
+        '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;line-height:17px;padding:2px 0 0 0;">' + titleLine + '</td></tr>' +
+        (contactLine ? '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#3D4F5F;line-height:17px;padding:4px 0 0 0;">' + contactLine + '</td></tr>' : '') +
+      '</table>' +
+      '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-top:8px;border-top:2px solid #1E2761;">' +
+        '<tr><td style="padding-top:6px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AAD;line-height:16px;">' + esc(addr) + '&nbsp;&nbsp;<span style="color:#D0D5DD;">|</span>&nbsp;&nbsp;<a href="https://www.wisconsinaviation.com" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;text-decoration:none;">WisconsinAviation.com</a></td></tr>' +
+      '</table>' +
+    '</td>' +
+  '</tr>' +
+'</table>' +
+(customText ? '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:560px;"><tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;line-height:15px;font-style:italic;">' + esc(customText) + '</td></tr></table>' : '') +
+(badges.length > 0 ? '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">' + badgeRow + '</table>' : '') +
+'<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:560px;"><tr><td style="padding:10px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:#B0B8C4;line-height:13px;">This message is CONFIDENTIAL and may be a privileged communication. If you are not the intended recipient, please notify us immediately and delete the message and its attachments from your computer.</td></tr></table>' +
+'<!--[if mso]></td></tr></table><![endif]-->';
     }
   } else {
     if (logoUrl) {
