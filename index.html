@@ -29,6 +29,7 @@
     grid-template-columns: 420px 1fr;
     gap: 32px;
     padding: 0 24px;
+    align-items: start;
   }
   @media (max-width: 900px) {
     .container { grid-template-columns: 1fr; }
@@ -372,7 +373,7 @@
   </div>
 
   <!-- RIGHT: Preview -->
-  <div class="panel" style="height:fit-content;">
+  <div class="panel" style="position:sticky;top:24px;">
     <h2>Live Preview</h2>
     <p class="subtitle">This is exactly how your signature will look in emails</p>
     <div id="signature-preview"></div>
@@ -477,18 +478,18 @@ function getBadgeUrls() {
 
 function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// Social media icons row builder
-function buildSocialRow() {
+// Social media icons — inline with address line
+function buildSocialInline() {
   if (!document.getElementById('showSocials').checked) return '';
   var fbUrl = document.getElementById('socialFbUrl').value.trim();
   var igUrl = document.getElementById('socialIgUrl').value.trim();
   var liUrl = document.getElementById('socialLiUrl').value.trim();
   if (!fbUrl && !igUrl && !liUrl) return '';
-  var icons = '';
-  if (fbUrl) icons += '<a href="https://www.facebook.com/Wisav/" target="_blank" style="text-decoration:none;"><img src="' + esc(fbUrl) + '" alt="Facebook" width="18" height="18" style="display:inline-block;border:0;width:18px;height:18px;margin-right:5px;" /></a>';
-  if (igUrl) icons += '<a href="https://www.instagram.com/wisconsin.aviation/" target="_blank" style="text-decoration:none;"><img src="' + esc(igUrl) + '" alt="Instagram" width="18" height="18" style="display:inline-block;border:0;width:18px;height:18px;margin-right:5px;" /></a>';
-  if (liUrl) icons += '<a href="https://www.linkedin.com/company/wisconsin-aviation-inc./" target="_blank" style="text-decoration:none;"><img src="' + esc(liUrl) + '" alt="LinkedIn" width="18" height="18" style="display:inline-block;border:0;width:18px;height:18px;" /></a>';
-  return '<tr><td style="padding:6px 0 0 0;">' + icons + '</td></tr>';
+  var icons = '&nbsp;&nbsp;';
+  if (fbUrl) icons += '<a href="https://www.facebook.com/Wisav/" target="_blank" style="text-decoration:none;"><img src="' + esc(fbUrl) + '" alt="Facebook" width="16" height="16" style="display:inline-block;border:0;width:16px;height:16px;vertical-align:middle;margin-right:4px;" /></a>';
+  if (igUrl) icons += '<a href="https://www.instagram.com/wisconsin.aviation/" target="_blank" style="text-decoration:none;"><img src="' + esc(igUrl) + '" alt="Instagram" width="16" height="16" style="display:inline-block;border:0;width:16px;height:16px;vertical-align:middle;margin-right:4px;" /></a>';
+  if (liUrl) icons += '<a href="https://www.linkedin.com/company/wisconsin-aviation-inc./" target="_blank" style="text-decoration:none;"><img src="' + esc(liUrl) + '" alt="LinkedIn" width="16" height="16" style="display:inline-block;border:0;width:16px;height:16px;vertical-align:middle;" /></a>';
+  return icons;
 }
 
 function pickLogo(style) {
@@ -617,16 +618,15 @@ function buildHTML() {
         '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#2D9CDB;line-height:17px;padding:2px 0 0 0;">' + (document.getElementById('stackedShowCompany').checked ? titleLine : titleLineNoCompany) + '</td></tr>' +
         (contactLine ? '<tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#3D4F5F;line-height:17px;padding:4px 0 0 0;">' + contactLine + '</td></tr>' : '') +
       '</table>' +
-      '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-top:8px;border-top:2px solid #1E2761;">' +
-        '<tr><td style="padding-top:6px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AAD;line-height:16px;">' + esc(addr) + '&nbsp;&nbsp;<span style="color:#D0D5DD;">|</span>&nbsp;&nbsp;<a href="https://www.wisconsinaviation.com" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;text-decoration:none;">WisconsinAviation.com</a></td></tr>' +
-        buildSocialRow() +
+      '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-top:5px;border-top:2px solid #1E2761;">' +
+        '<tr><td style="padding-top:4px;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AAD;line-height:16px;">' + esc(addr) + '&nbsp;&nbsp;<span style="color:#D0D5DD;">|</span>&nbsp;&nbsp;<a href="https://www.wisconsinaviation.com" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;text-decoration:none;">WisconsinAviation.com</a>' + buildSocialInline() + '</td></tr>' +
       '</table>' +
     '</td>' +
   '</tr>' +
 '</table>' +
 (customText ? '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:560px;"><tr><td style="padding:8px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;line-height:15px;font-style:italic;">' + esc(customText) + '</td></tr></table>' : '') +
 (badges.length > 0 ? '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">' + badgeRow + '</table>' : '') +
-'<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:560px;"><tr><td style="padding:10px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:#B0B8C4;line-height:13px;">This message is CONFIDENTIAL and may be a privileged communication. If you are not the intended recipient, please notify us immediately and delete the message and its attachments from your computer.</td></tr></table>' +
+'<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:560px;"><tr><td style="padding:4px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:#B0B8C4;line-height:13px;">This message is CONFIDENTIAL and may be a privileged communication. If you are not the intended recipient, please notify us immediately and delete the message and its attachments from your computer.</td></tr></table>' +
 '<!--[if mso]></td></tr></table><![endif]-->';
     }
   } else {
@@ -637,7 +637,7 @@ function buildHTML() {
 
   return '<!--[if mso]><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td><![endif]-->' +
 '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;max-width:520px;">' +
-  '<tr><td style="padding:0 0 10px 0;">' +
+  '<tr><td style="padding:0 0 6px 0;">' +
     '<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr>' +
       logoCell +
       '<td style="vertical-align:top;">' +
@@ -650,9 +650,9 @@ function buildHTML() {
     '</tr></table>' +
   '</td></tr>' +
   customTextRow +
-  '<tr><td style="padding:0;"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;"><tr><td style="border-top:2px solid #1E2761;font-size:0;line-height:0;height:8px;">&nbsp;</td></tr></table></td></tr>' +
-  '<tr><td style="padding:0;"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AAD;line-height:16px;">' + esc(addr) + '&nbsp;&nbsp;<span style="color:#D0D5DD;">|</span>&nbsp;&nbsp;<a href="https://www.wisconsinaviation.com" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;text-decoration:none;">WisconsinAviation.com</a></td></tr>' + buildSocialRow() + '</table></td></tr>' +
-  '<tr><td style="padding:10px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:#B0B8C4;line-height:13px;max-width:520px;">This message is CONFIDENTIAL and may be a privileged communication. If you are not the intended recipient, please notify us immediately and delete the message and its attachments from your computer.</td></tr>' +
+  '<tr><td style="padding:0;"><table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;width:100%;"><tr><td style="border-top:2px solid #1E2761;font-size:0;line-height:0;height:4px;">&nbsp;</td></tr></table></td></tr>' +
+  '<tr><td style="padding:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#8A9AAD;line-height:16px;">' + esc(addr) + '&nbsp;&nbsp;<span style="color:#D0D5DD;">|</span>&nbsp;&nbsp;<a href="https://www.wisconsinaviation.com" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#2D9CDB;text-decoration:none;">WisconsinAviation.com</a>' + buildSocialInline() + '</td></tr>' +
+  '<tr><td style="padding:4px 0 0 0;font-family:Arial,Helvetica,sans-serif;font-size:9px;color:#B0B8C4;line-height:13px;max-width:520px;">This message is CONFIDENTIAL and may be a privileged communication. If you are not the intended recipient, please notify us immediately and delete the message and its attachments from your computer.</td></tr>' +
   badgeRow +
 '</table>' +
 '<!--[if mso]></td></tr></table><![endif]-->';
